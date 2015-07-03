@@ -9,12 +9,15 @@ module Executrix
   class Api
     SALESFORCE_API_VERSION = '28.0'
 
-    def initialize(username, password, sandbox = false, api_version = SALESFORCE_API_VERSION)
+    def initialize(client: nil, username: nil, password: nil, sandbox: false, api_version: SALESFORCE_API_VERSION)
+      raise 'Must provide authorized client or username/password' if !client && !username
       @connection = Executrix::Connection.connect(
-        username,
-        password,
-        api_version,
-        sandbox)
+        client: client,
+        username: username,
+        password: password,
+        api_version: api_version,
+        sandbox: sandbox
+      )
     end
 
     def org_id

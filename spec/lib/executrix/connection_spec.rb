@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe Executrix::Connection do
-  let(:subject) { described_class.new nil, nil, nil, nil }
+  let(:subject) { described_class.new username: 'test', password: 'test', api_version: nil, sandbox: nil }
 
   {
     login: 0,

@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe Executrix::Api do
   let(:empty_connection) do
-    Executrix::Connection.new(nil, nil, nil, nil)
+    Executrix::Connection.new(api_version: nil, sandbox: nil)
   end
 
   let(:empty_batch) do
@@ -21,7 +21,7 @@ describe Executrix::Api do
         expect(Executrix::Connection)
           .to receive(:connect)
           .and_return(empty_connection)
-        s = described_class.new(nil, nil)
+        s = described_class.new(username: 'test', password: 'test')
         expect(s).to receive(:start_job)
           .with(method_name.to_s, *values)
         s.send(method_name, *values)
@@ -31,7 +31,7 @@ describe Executrix::Api do
         expect(Executrix::Connection)
           .to receive(:connect)
           .and_return(empty_connection)
-        s = described_class.new(nil, nil)
+        s = described_class.new(username: 'test', password: 'test')
         expect(empty_connection).to receive(:create_job).ordered
         expect(empty_connection).to receive(:add_batch).ordered
         expect(empty_connection).to receive(:close_job).ordered
@@ -50,7 +50,7 @@ describe Executrix::Api do
           .to receive(:new)
         .and_return(empty_batch)
 
-      s = described_class.new(nil, nil)
+      s = described_class.new(username: 'test', password: 'test')
       sobject_input = 'sobject_stub'
       query_input = 'query_stub'
       expect(empty_connection).to receive(:create_job).ordered
@@ -82,7 +82,7 @@ describe Executrix::Api do
             expect(Executrix::Connection)
               .to receive(:connect)
               .and_return(empty_connection)
-            s = described_class.new(nil, nil)
+            s = described_class.new(username: 'test', password: 'test')
             expect(s).to receive(:start_job)
               .with(method_name.to_s, *values)
             s.send(method_name, *values)
@@ -92,7 +92,7 @@ describe Executrix::Api do
             expect(Executrix::Connection)
               .to receive(:connect)
               .and_return(empty_connection)
-            s = described_class.new(nil, nil)
+            s = described_class.new(username: 'test', password: 'test')
             expect(empty_connection).to receive(:create_job).ordered
             expect(empty_connection).to receive(:add_file_upload_batch).ordered
             expect(empty_connection).to receive(:close_job).ordered

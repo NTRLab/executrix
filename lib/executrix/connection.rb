@@ -3,7 +3,8 @@ module Executrix
     attr_reader :raw_request
     attr_reader :raw_result
 
-    def initialize(username, password, api_version, sandbox)
+    def initialize(client: nil, username: nil, password: nil, api_version:, sandbox:)
+      @client = client
       @username = username
       @password = password
       @api_version = api_version
@@ -11,14 +12,21 @@ module Executrix
     end
 
     def login
-      response = Executrix::Http.login(
-        @sandbox,
-        @username,
-        @password,
-        @api_version)
+      if @client && @client.respond_to?(:oauth_token) && @client.respond_to?(:instance_url)
+        @session_id = @client.oauth_token
+        @instance = @client.instance_url.gsub /^https?:\/\/(\w+)\.salesforce\.com$/, '\1'
+      elsif @username && @password
+        response = Executrix::Http.login(
+            @sandbox,
+            @username,
+            @password,
+            @api_version)
 
-      @session_id = response[:session_id]
-      @instance = response[:instance]
+        @session_id = response[:session_id]
+        @instance = response[:instance]
+      else
+        raise 'Must provide authorized client or username/password'
+      end
       self
     end
 
@@ -109,8 +117,8 @@ module Executrix
         @api_version)[:id]
     end
 
-    def self.connect(username, password, api_version, sandbox)
-      self.new(username, password, api_version, sandbox).login
+    def self.connect(client: nil, username: nil, password: nil, api_version:, sandbox:)
+      self.new(client: client, username: username, password: password, api_version: api_version, sandbox: sandbox).login
     end
   end
 end
